@@ -1,4 +1,6 @@
-import java.security.PrivateKey;
+package model;
+
+import java.util.Objects;
 
 public class Task {
     protected int id;
@@ -10,7 +12,6 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = TaskStatus.NEW;
-        this.id=TaskManager.getSeqId();
     }
 
     public int getId() {
@@ -37,21 +38,34 @@ public class Task {
         this.description = description;
     }
 
-    public  TaskStatus getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    public  void setStatus(TaskStatus status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
     @Override
     public String toString() {
-        return "Task{id =  " + id +
-                ", name = '"+ name + '\''+
-                ", description = '" + description + '\''+
-                ", status = '" + status.name()+ '\'' +
+        return "model.Task{id =  " + id +
+                ", name = '" + name + '\'' +
+                ", description = '" + description + '\'' +
+                ", status = '" + status.name() + '\'' +
                 "}"
                 ;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id;
     }
 }
