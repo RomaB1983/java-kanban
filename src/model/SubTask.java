@@ -15,7 +15,6 @@ public class SubTask extends Task {
         this.epicId = epicId;
     }
 
-
     @Override
     public String toString() {
         return "model.SubTask{id =  " + id +
@@ -24,7 +23,5 @@ public class SubTask extends Task {
                 ", status = '" + status.name() + '\'' +
                 ", epic.id= '" + epicId + '\'' +
                 "}";
-
-
     }
 }

@@ -4,8 +4,6 @@ import model.Task;
 import model.TaskStatus;
 import service.TaskManager;
 
-import java.util.ArrayList;
-
 public class Main {
     public static void main(String[] args) {
         /* Приветствую). Честно говоря, у меня есть стойкое ощущение, что я не совсем понял задание
@@ -25,10 +23,24 @@ public class Main {
          При этом две задачи с одинаковым id должны выглядеть для менеджера как одна и та же.
          И далее
          💡Эти методы нежелательно переопределять в наследниках. Ваша задача — подумать, почему.
-         Правильно понимаю, нежелательно переопределять их потому, что id - атрибут класса model.Task? и не стоит в потомках
-         менять поведение по инденификации по id?
+         Правильно понимаю, нежелательно переопределять их потому, что id - атрибут класса model.Task? и не стоит в
+         потомках менять поведение по инденификации по id?
 
          */
+
+
+        /*
+        * Часть 3
+        * Касаемо комментария     /*
+          TaskManager.addSubTask Эта логика на самом деле лишняя, лучше инициализировать список айди подзадач при
+          создании эпика пустым
+          списком private ArrayList<Integer> subTaskIds = new ArrayList<>();,
+          тогда он никогда не будет null и эта вся логика свернется в одну строку epic.getSubTaskIds().add(subtask.getId());
+          Изначально я так и хотел сделать. Но потом в ТЗ увидел, что эпик может и не иметь задач. Поэтому решил,что
+          надо тогда так и делать, и не должно быть никаких пустых ArrayList у Эпика при отсутсвии подзадач ).
+          Ок поправил)
+         */
+
         System.out.println("Поехали!");
 
         TaskManager taskManager = new TaskManager();
@@ -51,22 +63,11 @@ public class Main {
         subTask2.setEpicId(epic2.getId());
         taskManager.addSubTask(subTask2);
 
-        ArrayList<Integer> subTasksList1 = new ArrayList<>();
-        subTasksList1.add(subTask1.getId());
-        subTasksList1.add(subTask2.getId());
-        epic2.setSubTasksIds(subTasksList1);
-
-
         Epic epic3 = new Epic("Сделать задание 4 спринта", "Сделать задание 4 спринта");
         taskManager.addEpic(epic3);
         SubTask subTask3 = new SubTask("Понять, что нужно", "Понять, как должна работать программа");
         subTask3.setEpicId(epic3.getId());
         taskManager.addSubTask(subTask3);
-
-        ArrayList<Integer> subTasksList2 = new ArrayList<>();
-        subTasksList2.add(subTask3.getId());
-
-        epic3.setSubTasksIds(subTasksList2);
 
         //Получение списка всех задач
         for (Task task : taskManager.getTasksList()) {
@@ -81,29 +82,29 @@ public class Main {
         }
 
         System.out.println("Получение всех подзадач определенного эпика");
+        System.out.println("epic3");
         for (SubTask subTask : taskManager.getSubTasksByEpic(epic3.getId())) {
             System.out.println(subTask);
         }
-
+        System.out.println("epic2");
         for (SubTask subTask : taskManager.getSubTasksByEpic(epic2.getId())) {
             System.out.println(subTask);
         }
         System.out.println("Смена статуса у подзадач");
+        System.out.println("epic2");
         for (SubTask subTask : taskManager.getSubTasksByEpic(epic2.getId())) {
             subTask.setStatus(TaskStatus.IN_PROGRESS);
-            System.out.println("subTask = " + subTask);
+            System.out.println(subTask);
             taskManager.updateSubTask(subTask);
-            System.out.println("model.Epic: " + epic2);
+            System.out.println(epic2);
         }
 
-        System.out.println("Смена статуса у подзадач (IN_PROGRESS/NEW)");
+        System.out.println("Смена статуса у подзадач (IN_PROGRESS/DONE)");
+        System.out.println("epic2");
         for (SubTask subTask : taskManager.getSubTasksByEpic(epic2.getId())) {
             subTask.setStatus(TaskStatus.DONE);
             taskManager.updateSubTask(subTask);
             System.out.println("model.Epic: " + epic2);
         }
-
-
     }
-
 }

@@ -52,8 +52,7 @@ public class Task {
                 ", name = '" + name + '\'' +
                 ", description = '" + description + '\'' +
                 ", status = '" + status.name() + '\'' +
-                "}"
-                ;
+                "}";
     }
 
     @Override
@@ -63,9 +62,13 @@ public class Task {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Task task = (Task) o;
-        return id == task.id;
+        return this.id == task.id;
     }
 }
