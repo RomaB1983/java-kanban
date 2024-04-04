@@ -21,7 +21,6 @@ class TaskTest {
 
     @Test
     void isPositiveEqualsTaskWhenIdEquals() {
-
         task2.setId(task1.getId());
         assertEquals(task1, task2, "Id у Task одинаковые, но они не равны");
     }

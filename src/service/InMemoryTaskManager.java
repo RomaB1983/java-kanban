@@ -143,10 +143,16 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.remove(id);
     }
 
+    /*При написании теста isShouldBeEpic1DelAndEpicIdInSubtasksDelWhenEpic1Delete обнаружил ошибку(?)
+     * При удалении эпика, нужно еще зачищать EpicId in Subtask?
+     * */
     @Override
     public void deleteEpic(int id) {
         Epic epic = epics.get(id);
         if (epic != null) {
+            for (Integer subTaskId : epic.getSubTaskIds()) {
+                subTasks.get(subTaskId).setEpicId(null);
+            }
             epic.getSubTaskIds().clear();
         }
         epics.remove(id);
@@ -175,7 +181,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpic(int id) {
         historyManager.add(epics.get(id));
-        System.out.println("historyManager = " + historyManager);
         return epics.get(id);
     }
 
