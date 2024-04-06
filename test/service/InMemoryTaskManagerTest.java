@@ -4,7 +4,6 @@ import model.Epic;
 import model.SubTask;
 import model.Task;
 import model.TaskStatus;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.interfaces.TaskManager;
@@ -21,20 +20,9 @@ class InMemoryTaskManagerTest {
     static Task task1 = new Task("Вызвать такси", "Вызвать грузовое такси");
     static Epic epic1 = new Epic("Очень важный эпик", "Очень важный эпик");
 
-    @BeforeAll
-    static void beforeAll() {
-        taskManager = Managers.getDefault();
-
-    }
-
     @BeforeEach
     void beforeEach() {
-        epic1.getSubTaskIds().clear();
-        subTask1.setEpicId(null);
-
-        taskManager.deleteTasks();
-        taskManager.deleteEpics();
-
+        taskManager = Managers.getDefault();
         taskManager.addTask(task1);
         taskManager.addEpic(epic1);
 
@@ -46,7 +34,6 @@ class InMemoryTaskManagerTest {
         subTask2.setEpicId(epic1.getId());
         taskManager.addSubTask(subTask2);
         taskManager.addSubTask(subTask2);
-
     }
 
     @Test
@@ -136,17 +123,9 @@ class InMemoryTaskManagerTest {
 
     @Test
     void isShouldBeAddInEpicsSubTasksWhenAddSubTask() {
-        boolean isExist = false;
-        for (Integer id : epic1.getSubTaskIds()) {
-            if (id == subTask1.getId()) {
-                isExist = true;
-                break;
-            }
-        }
-        assertTrue(isExist, "subtask1 не добавлен в список subtasks у Epic1");
+        assertEquals(epic1.getSubTaskIds().get(0), subTask1.getId(), "subtask1 не добавлен в список subtasks у Epic1");
     }
 
-    // Cдается мне это бессмысленный тест(. При доставание из мапы мы всегда будем получать тот же task1
     @Test
     void isShouldBeUpdateTaskInManagerWhenUpdateTask() {
         task1.setName("Обновление задачи");
@@ -158,7 +137,6 @@ class InMemoryTaskManagerTest {
                 "subtask1.description не обновился");
     }
 
-    // Cдается мне это бессмысленный тест(. При доставание из мапы мы всегда будем получать тот же epic1
     @Test
     void isShouldBeUpdateEpicInManagerWhenUpdateEpic() {
         epic1.setName("Обновление эпика");
@@ -170,7 +148,7 @@ class InMemoryTaskManagerTest {
                 "epic1.description не обновился");
     }
 
-    // Cдается мне это бессмысленный тест(. При доставание из мапы мы всегда будем получать тот же subTask1
+
     @Test
     void isShouldBeUpdateSubtaskInManagerWhenUpdateSubtask() {
         subTask1.setName("Обновление сабтаска");
@@ -184,32 +162,28 @@ class InMemoryTaskManagerTest {
 
     @Test
     void isShouldBeEpicStatusDoneWhenAllSubTasksDone() {
-        for (SubTask subTask : taskManager.getSubTasksByEpic(epic1.getId())) {
-            subTask.setStatus(TaskStatus.DONE);
-            taskManager.updateSubTask(subTask);
-        }
+        subTask1.setStatus(TaskStatus.DONE);
+        taskManager.updateSubTask(subTask1);
+        subTask2.setStatus(TaskStatus.DONE);
+        taskManager.updateSubTask(subTask2);
         assertEquals(epic1.getStatus(), TaskStatus.DONE, "epic1 не статусе DONE,а subtask.status=DONE");
     }
 
     @Test
     void isShouldBeEpicStatusNewWhenAllSubTasksNew() {
-        for (SubTask subTask : taskManager.getSubTasksByEpic(epic1.getId())) {
-            subTask.setStatus(TaskStatus.NEW);
-            taskManager.updateSubTask(subTask);
-        }
+        subTask1.setStatus(TaskStatus.NEW);
+        taskManager.updateSubTask(subTask1);
+        subTask2.setStatus(TaskStatus.NEW);
+        taskManager.updateSubTask(subTask2);
         assertEquals(epic1.getStatus(), TaskStatus.NEW, "epic1 не статусе DONE,а subtask.status=NEW");
     }
 
     @Test
     void isShouldBeEpicStatusInProgressWhenAllSubTaskNotNewAndNotDone() {
-        for (SubTask subTask : taskManager.getSubTasksByEpic(epic1.getId())) {
-            if (subTask.getId() % 2 == 0) {
-                subTask.setStatus(TaskStatus.NEW);
-            } else {
-                subTask.setStatus(TaskStatus.DONE);
-            }
-            taskManager.updateSubTask(subTask);
-        }
+        subTask1.setStatus(TaskStatus.NEW);
+        taskManager.updateSubTask(subTask1);
+        subTask2.setStatus(TaskStatus.DONE);
+        taskManager.updateSubTask(subTask2);
         assertEquals(epic1.getStatus(), TaskStatus.IN_PROGRESS, "epic1 не в статусе IN_PROGRESS," +
                 " а subtasks.status in (NEW,DONE)");
     }
@@ -229,90 +203,35 @@ class InMemoryTaskManagerTest {
 
     @Test
     void isShouldBeIdsInEpicAndSubtasksClearWhenSubtasksDeleteAll() {
-        boolean isIdsNotEmpty = false;
         taskManager.deleteSubTasks();
         assertEquals(taskManager.getSubTasksList().size(), 0, "сабтаски должны быть удалены");
-        for (Epic epic : taskManager.getEpicsList()) {
-            if (!epic.getSubTaskIds().isEmpty()) {
-                isIdsNotEmpty = true;
-                break;
-            }
-        }
-        assertFalse(isIdsNotEmpty, "У епиков должен быть зачищен массив с сабтасками");
+        assertTrue(epic1.getSubTaskIds().isEmpty(), "У epic1 не удален массив subtasks");
     }
 
     @Test
     void isShouldBeIdsInEpic1AndSubtask1DeleteWhenSubtasks1Delete() {
-        boolean isExistSubtask1InEpic1 = false;
-        boolean isExistSubtask1 = false;
-
         taskManager.deleteSubTask(subTask1.getId());
-        for (Integer id : epic1.getSubTaskIds()) {
-            if (id == subTask1.getId()) {
-                isExistSubtask1InEpic1 = true;
-                break;
-            }
-        }
-
-        for (SubTask subTask : taskManager.getSubTasksList()) {
-            if (subTask.getId() == subTask1.getId()) {
-                isExistSubtask1 = true;
-                break;
-            }
-        }
-
-        assertFalse(isExistSubtask1InEpic1, "subtask1 не удален из Epic1");
-        assertFalse(isExistSubtask1, "subtask1 не удален");
+        assertNotEquals(epic1.getSubTaskIds().get(0), subTask1.getId(), "У epic1 не удален subtask1");
+        assertNotEquals(taskManager.getSubTasksList().get(0), subTask1.getId(), "subtask1 не удален");
     }
 
     @Test
     void isShouldBeEpic1DelAndEpicIdInSubtasksDelWhenEpic1Delete() {
-        boolean isExistEpic1InSubtask1 = false;
-        boolean isExistEpic1 = false;
         taskManager.deleteEpic(epic1.getId());
-        for (Epic epic : taskManager.getEpicsList()) {
-            if (epic.getId() == epic1.getId()) {
-                isExistEpic1 = true;
-                break;
-            }
-        }
-
-        for (SubTask subTask : taskManager.getSubTasksList()) {
-            if (subTask.getEpicId() != null) {
-                isExistEpic1InSubtask1 = true;
-                break;
-            }
-        }
-
-        assertFalse(isExistEpic1, "epic1 не удален");
-        assertFalse(isExistEpic1InSubtask1, "из subtask1 не удален id epic1");
+        assertNull(taskManager.getEpic(epic1.getId()), "epic1 не удален");
+        assertTrue(epic1.getSubTaskIds().isEmpty(), "У epic1 не удален массив subtasks");
     }
 
     @Test
     void isShouldBeTask1InTaksClearWhenTaks1Del() {
-        boolean isExistsTask1 = false;
-
         taskManager.deleteTask(task1.getId());
-        for (Task task : taskManager.getTasksList()) {
-            if (task.getId() == task1.getId()) {
-                isExistsTask1 = true;
-                break;
-            }
-        }
-        assertFalse(isExistsTask1, "task1 должен быть удален");
+        assertEquals(taskManager.getTasksList().size(), 0, "task1 должен быть удален");
     }
 
     @Test
     void isShouldBeHistoryWhenGetTask1() {
-        boolean isExistsTask1 = false;
-
         taskManager.getTask(task1.getId());
-        for (Task task : taskManager.getHistory()) {
-            if (task.equals(task1)) {
-                isExistsTask1 = true;
-                break;
-            }
-        }
-        assertTrue(isExistsTask1, "В истории нет task1");
+        assertEquals(taskManager.getHistory().size(), 1, "В истории более одной задачи");
+        assertEquals(taskManager.getHistory().get(0), task1, "В истории не задача task1");
     }
 }
