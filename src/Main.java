@@ -5,10 +5,11 @@ import model.TaskStatus;
 import service.Managers;
 import service.interfaces.TaskManager;
 /*
-* Привет! Часть2
-* По коду написал несколько комментариеев :-)
+* Привет!
+* По коду написал несколько комментарий :-)
+* Дополнительное задание сделаю обязательно, как получу порцию замечаний)
 
-* */
+ */
 public class Main {
 
     public static void main(String[] args) {
