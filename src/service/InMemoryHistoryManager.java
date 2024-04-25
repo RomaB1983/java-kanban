@@ -34,7 +34,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(Collection<Integer> ids) {
-        for(int id :ids){
+        for (int id : ids) {
             remove(id);
         }
     }
@@ -51,7 +51,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             tail.next = newNode;
         }
-        tail=newNode;
+        tail = newNode;
         return newNode;
     }
 
@@ -85,6 +85,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         return tasks;
     }
+
     private static class Node {
         Task task;
         Node next;
