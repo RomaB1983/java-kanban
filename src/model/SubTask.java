@@ -12,7 +12,9 @@ public class SubTask extends Task {
     }
 
     public void setEpicId(Integer epicId) {
-        this.epicId = epicId;
+        if (epicId != id) {
+            this.epicId = epicId;
+        }
     }
 
     @Override

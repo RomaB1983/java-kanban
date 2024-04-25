@@ -29,6 +29,6 @@ class SubTaskTest {
     @Test
     void isNegativeMakeSubTaskToEpic() {
         subTask1.setEpicId(subTask1.getId());
-        assertEquals(subTask1, subTask2, "Id у subTask одинаковые, но они не равны");
+        assertNull(subTask1.getEpicId(), "нельзя присвоить epicId значением самого subtask");
     }
 }

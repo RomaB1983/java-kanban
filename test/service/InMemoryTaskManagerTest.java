@@ -219,6 +219,7 @@ class InMemoryTaskManagerTest {
     void isShouldBeEpic1DelAndEpicIdInSubtasksDelWhenEpic1Delete() {
         taskManager.deleteEpic(epic1.getId());
         assertNull(taskManager.getEpic(epic1.getId()), "epic1 не удален");
+        System.out.println(epic1.getSubTaskIds().size());
         assertTrue(epic1.getSubTaskIds().isEmpty(), "У epic1 не удален массив subtasks");
     }
 

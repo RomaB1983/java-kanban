@@ -26,8 +26,17 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
+        System.out.println("history.task " + history.get(id));
         removeNode(history.get(id));
         history.remove(id);
+        System.out.println("history.task del " + history.get(id));
+    }
+
+    @Override
+    public void remove(Collection<Integer> ids) {
+        for(int id :ids){
+            remove(id);
+        }
     }
 
     @Override
@@ -36,14 +45,13 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private Node linkLast(Task task) {
-        final Node last = tail;
-        final Node newNode = new Node(last, task, null);
-        tail = newNode;
-        if (last == null) {
+        final Node newNode = new Node(tail, task, null);
+        if (tail == null) {
             head = newNode;
         } else {
-            last.next = newNode;
+            tail.next = newNode;
         }
+        tail=newNode;
         return newNode;
     }
 
@@ -68,12 +76,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
-    /**
-     * В ТЗ написано, что надо из двусвязногосписка формировать список таск.
-     * Можешь пояснить зачем? Почему нельзя собрать их из history через values(), и также в цикле собрать List?
-     * На мой взгляд выглядит логичнее. Так мы точно соберем то, что в истории..
-     * Вроде и не дольше должна работать такая реализация..
-    */
     private List<Task> getTasks() {
         ArrayList<Task> tasks = new ArrayList<>();
         Node node = head;
@@ -83,4 +85,16 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         return tasks;
     }
+    private static class Node {
+        Task task;
+        Node next;
+        Node prev;
+
+        public Node(Node prev, Task element, Node next) {
+            this.task = element;
+            this.next = next;
+            this.prev = prev;
+        }
+    }
+
 }
