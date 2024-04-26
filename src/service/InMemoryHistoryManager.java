@@ -33,13 +33,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void remove(Collection<Integer> ids) {
-        for (int id : ids) {
-            remove(id);
-        }
-    }
-
-    @Override
     public List<Task> getHistory() {
         return getTasks();
     }
