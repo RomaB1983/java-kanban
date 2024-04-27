@@ -7,9 +7,7 @@ import model.TaskStatus;
 import service.interfaces.HistoryManager;
 import service.interfaces.TaskManager;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private int seqId;
@@ -69,13 +67,22 @@ public class InMemoryTaskManager implements TaskManager {
         return subTasks;
     }
 
+    private void historyRemove(Collection<Integer> ids) {
+        for (Integer id : ids) {
+            historyManager.remove(id);
+        }
+    }
+
     @Override
     public void deleteTasks() {
+        historyRemove(tasks.keySet());
         tasks.clear();
     }
 
     @Override
     public void deleteEpics() {
+        historyRemove(subTasks.keySet());
+        historyRemove(epics.keySet());
         subTasks.clear();
         epics.clear();
     }
@@ -85,6 +92,7 @@ public class InMemoryTaskManager implements TaskManager {
         for (Epic epic : epics.values()) {
             epic.getSubTaskIds().clear();
         }
+        historyRemove(subTasks.keySet());
         subTasks.clear();
     }
 
@@ -141,6 +149,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTask(int id) {
         tasks.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
@@ -150,12 +159,14 @@ public class InMemoryTaskManager implements TaskManager {
             epic.getSubTaskIds().clear();
         }
         epics.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
     public void deleteSubTask(int id) {
         SubTask subtask = subTasks.remove(id);
         epics.get(subtask.getEpicId()).getSubTaskIds().remove((Integer) id);
+        historyManager.remove(id);
     }
 
     @Override
