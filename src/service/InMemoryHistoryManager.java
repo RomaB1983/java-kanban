@@ -26,10 +26,8 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        System.out.println("history.task " + history.get(id));
         removeNode(history.get(id));
         history.remove(id);
-        System.out.println("history.task del " + history.get(id));
     }
 
     @Override
