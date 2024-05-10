@@ -1,18 +1,12 @@
 import model.Epic;
 import model.SubTask;
 import model.Task;
-import service.FileBackedTaskManager;
 import service.Managers;
 import service.interfaces.TaskManager;
 
 import java.io.File;
 
-/*
-* Привет!
-* По коду написал несколько комментарий :-)
-* Дополнительное задание сделаю обязательно, как получу порцию замечаний)
 
- */
 public class Main {
 
     public static void main(String[] args) {
