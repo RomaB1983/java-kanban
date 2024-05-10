@@ -25,7 +25,7 @@ class FileBackedTaskManagerTest {
     void beforeEach() {
 
         try {
-            taskManager = FileBackedTaskManager.loadFromFile(File.createTempFile("tasks", "tmp"));
+            taskManager = Managers.loadFromFile(File.createTempFile("tasks", "tmp"));
         } catch (IOException e) {
             throw new ManagerSaveException(e);
         }

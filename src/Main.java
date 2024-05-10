@@ -2,6 +2,7 @@ import model.Epic;
 import model.SubTask;
 import model.Task;
 import service.FileBackedTaskManager;
+import service.Managers;
 import service.interfaces.TaskManager;
 
 import java.io.File;
@@ -18,7 +19,7 @@ public class Main {
 
         System.out.println("Поехали!");
 
-        TaskManager taskManager = FileBackedTaskManager.loadFromFile(new File("C:\\temp\\tasks.csv"));
+        TaskManager taskManager = Managers.loadFromFile(new File("C:\\temp\\tasks.csv"));
 
         Task task1 = new Task("Вызвать такси", "Вызвать грузовое такси");
         Task task2 = new Task("Собрать коробку", "Собрать коробку для книг");

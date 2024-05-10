@@ -14,6 +14,25 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public FileBackedTaskManager(String filename) {
         this.filename = filename;
+        int taskId;
+        int maxTaskId = 0;
+        for (String line : getRows()) {
+            taskId = restoreTasks(fromString(line));
+            if (taskId > maxTaskId) {
+                maxTaskId = taskId;
+            }
+        }
+        if (maxTaskId > 0) {
+            setSeqId(maxTaskId);
+        }
+
+        for (SubTask subTask : getSubTasksList()) {
+            Epic epic = epics.get(subTask.getEpicId());
+            if (epic != null) {
+                epic.getSubTaskIds().add(subTask.getId());
+            }
+        }
+
     }
 
     @Override
@@ -155,45 +174,22 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) {
-        FileBackedTaskManager fileTaskManager = new FileBackedTaskManager(file.getPath());
-        int taskId;
-        int maxTaskId = 0;
-        for (String line : getRows(file)) {
-            taskId = restoreTasks(fromString(line), fileTaskManager);
-            if (taskId > maxTaskId) {
-                maxTaskId = taskId;
-            }
-        }
-        if (maxTaskId > 0) {
-            fileTaskManager.setSeqId(maxTaskId);
-        }
 
-        for (SubTask subTask : fileTaskManager.getSubTasksList()) {
-            Epic epic = fileTaskManager.epics.get(subTask.getEpicId());
-            if (epic != null) {
-                epic.getSubTaskIds().add(subTask.getId());
-            }
-        }
-
-        return fileTaskManager;
-    }
-
-    private static int restoreTasks(Task task, FileBackedTaskManager fileManager) {
+    private int restoreTasks(Task task) {
         if (task instanceof Epic) {
-            fileManager.epics.put(task.getId(), (Epic) task);
+            epics.put(task.getId(), (Epic) task);
         } else if (task instanceof SubTask) {
-            fileManager.subTasks.put(task.getId(), (SubTask) task);
+            subTasks.put(task.getId(), (SubTask) task);
         } else {
-            fileManager.tasks.put(task.getId(), task);
+            tasks.put(task.getId(), task);
         }
         return task.getId();
 
     }
 
-    private static List<String> getRows(File file) {
+    private List<String> getRows() {
         List<String> ret = new ArrayList<>();
-        try (BufferedReader fileReader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+        try (BufferedReader fileReader = new BufferedReader(new FileReader(filename, StandardCharsets.UTF_8))) {
             boolean isHeader = true;
             while (fileReader.ready()) {
                 if (isHeader) {
@@ -206,7 +202,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException e) {
             throw new ManagerSaveException(e);
         }
-
         return ret;
     }
 
