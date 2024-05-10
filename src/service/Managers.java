@@ -1,7 +1,5 @@
 package service;
 
-import model.Epic;
-import model.SubTask;
 import service.interfaces.HistoryManager;
 import service.interfaces.TaskManager;
 
@@ -16,6 +14,7 @@ public class Managers {
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
+
     public static FileBackedTaskManager loadFromFile(File file) {
         return new FileBackedTaskManager(file.getPath());
     }
