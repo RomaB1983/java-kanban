@@ -1,9 +1,11 @@
 import model.Epic;
 import model.SubTask;
 import model.Task;
-import model.TaskStatus;
-import service.Managers;
+import service.FileBackedTaskManager;
 import service.interfaces.TaskManager;
+
+import java.io.File;
+
 /*
 * Привет!
 * По коду написал несколько комментарий :-)
@@ -16,7 +18,7 @@ public class Main {
 
         System.out.println("Поехали!");
 
-        TaskManager taskManager = Managers.getDefault();
+        TaskManager taskManager = FileBackedTaskManager.loadFromFile(new File("C:\\temp\\tasks.csv"));
 
         Task task1 = new Task("Вызвать такси", "Вызвать грузовое такси");
         Task task2 = new Task("Собрать коробку", "Собрать коробку для книг");
@@ -41,7 +43,7 @@ public class Main {
         SubTask subTask3 = new SubTask("Понять, что нужно", "Понять, как должна работать программа");
         subTask3.setEpicId(epic3.getId());
         taskManager.addSubTask(subTask3);
-
+/*
         //Получение списка всех задач
         for (Task task : taskManager.getTasksList()) {
             System.out.println(task);
@@ -79,8 +81,10 @@ public class Main {
             taskManager.updateSubTask(subTask);
             System.out.println("model.Epic: " + epic2);
         }
-
+*/
         printAllTasks(taskManager);
+
+
     }
 
     private static void printAllTasks(TaskManager manager) {

@@ -11,9 +11,9 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private int seqId;
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Epic> epics;
-    private final HashMap<Integer, SubTask> subTasks;
+    protected final HashMap<Integer, Task> tasks;
+    protected final HashMap<Integer, Epic> epics;
+    protected final HashMap<Integer, SubTask> subTasks;
 
     private final HistoryManager historyManager;
 
@@ -26,6 +26,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int getSeqId() {
         return ++seqId;
+    }
+
+    protected void setSeqId(int num) {
+        seqId = num;
     }
 
     @Override
