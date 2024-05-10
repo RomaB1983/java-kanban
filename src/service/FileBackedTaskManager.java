@@ -157,7 +157,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager fileTaskManager = new FileBackedTaskManager(file.getPath());
-        int taskId ;
+        int taskId;
         int maxTaskId = 0;
         for (String line : getRows(file)) {
             taskId = restoreTasks(fromString(line), fileTaskManager);
