@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+import utility.StringWorker;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -9,15 +10,22 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final String filename;
-    private static final CharSequence DELIMITER = ";";
+
     private static final String HEADER = "id,type,name,status,description,epic";
 
-    public FileBackedTaskManager(String filename) {
+    public FileBackedTaskManager(String filename, boolean isLoadFromFile) {
         this.filename = filename;
+        if (isLoadFromFile) {
+            loadFromFile();
+        }
+    }
+
+    public void loadFromFile() {
         int taskId;
         int maxTaskId = 0;
+
         for (String line : getRows()) {
-            taskId = restoreTasks(fromString(line));
+            taskId = restoreTask(StringWorker.fromString(line));
             if (taskId > maxTaskId) {
                 maxTaskId = taskId;
             }
@@ -32,42 +40,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 epic.getSubTaskIds().add(subTask.getId());
             }
         }
-
-    }
-
-    @Override
-    public ArrayList<Task> getTasksList() {
-        return super.getTasksList();
-    }
-
-    @Override
-    public ArrayList<Epic> getEpicsList() {
-        return super.getEpicsList();
-    }
-
-    @Override
-    public ArrayList<SubTask> getSubTasksList() {
-        return super.getSubTasksList();
-    }
-
-    @Override
-    public ArrayList<SubTask> getSubTasksByEpic(Integer id) {
-        return super.getSubTasksByEpic(id);
-    }
-
-    @Override
-    public void deleteTasks() {
-        super.deleteTasks();
-    }
-
-    @Override
-    public void deleteEpics() {
-        super.deleteEpics();
-    }
-
-    @Override
-    public void deleteSubTasks() {
-        super.deleteSubTasks();
     }
 
     @Override
@@ -125,29 +97,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public Task getTask(int id) {
-        return super.getTask(id);
-    }
-
-    @Override
-    public Epic getEpic(int id) {
-        return super.getEpic(id);
-    }
-
-    @Override
-    public SubTask getSubTask(int id) {
-        return super.getSubTask(id);
-    }
-
-    @Override
     public void setStatus(Epic epic) {
         super.setStatus(epic);
         save();
-    }
-
-    @Override
-    public List<Task> getHistory() {
-        return super.getHistory();
     }
 
     private void save() {
@@ -167,24 +119,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(filename, StandardCharsets.UTF_8))) {
             fileWriter.write(HEADER + "\n");
             for (Task task : list) {
-                fileWriter.write(toString(task) + "\n");
+                fileWriter.write(StringWorker.toString(task) + "\n");
             }
         } catch (IOException e) {
             throw new ManagerSaveException(e);
         }
     }
 
-
-    private int restoreTasks(Task task) {
-        if (task instanceof Epic) {
-            epics.put(task.getId(), (Epic) task);
-        } else if (task instanceof SubTask) {
-            subTasks.put(task.getId(), (SubTask) task);
-        } else {
-            tasks.put(task.getId(), task);
+    private int restoreTask(Task task) {
+        switch (task.getType()) {
+            case TASK -> tasks.put(task.getId(), task);
+            case EPIC -> epics.put(task.getId(), (Epic) task);
+            case SUBTASK -> subTasks.put(task.getId(), (SubTask) task);
         }
         return task.getId();
-
     }
 
     private List<String> getRows() {
@@ -203,54 +151,5 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             throw new ManagerSaveException(e);
         }
         return ret;
-    }
-
-    public String toString(Task task) {
-        if (task != null) {
-            List<String> taskFields = new ArrayList<>();
-            TaskType taskType;
-            if (task instanceof Epic) {
-                taskType = TaskType.EPIC;
-            } else if (task instanceof SubTask) {
-                taskType = TaskType.SUBTASK;
-            } else {
-                taskType = TaskType.TASK;
-            }
-
-            taskFields.add(String.valueOf(task.getId()));
-            taskFields.add(taskType.name());
-            taskFields.add(task.getName());
-            taskFields.add(task.getStatus().name());
-            taskFields.add(task.getDescription());
-            if (taskType == TaskType.SUBTASK) {
-                taskFields.add(String.valueOf(((SubTask) task).getEpicId()));
-            }
-            return String.join(DELIMITER, taskFields) + DELIMITER;
-        }
-        return null;
-    }
-
-    static Task fromString(String value) {
-        String[] vals = value.split(String.valueOf(DELIMITER));
-        int id = Integer.parseInt(vals[0]);
-        TaskType taskType = TaskType.valueOf(vals[1]);
-        String name = vals[2];
-        TaskStatus taskStatus = TaskStatus.valueOf(vals[3]);
-        String description = vals[4];
-
-        Task task = null;
-        switch (taskType) {
-            case TASK -> task = new Task(name, description);
-            case EPIC -> task = new Epic(name, description);
-            case SUBTASK -> {
-                task = new SubTask(name, description);
-                ((SubTask) task).setEpicId(Integer.parseInt(vals[5]));
-            }
-        }
-        if (task != null) {
-            task.setId(id);
-            task.setStatus(taskStatus);
-        }
-        return task;
     }
 }

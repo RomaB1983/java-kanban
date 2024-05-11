@@ -6,14 +6,15 @@ import model.Task;
 import model.TaskStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utility.StringWorker;
 
 import java.io.File;
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTaskManagerTest {
     static FileBackedTaskManager taskManager;
+    static FileBackedTaskManager taskManagerFromFile;
     static SubTask subTask1 = new SubTask("сабтаск1",
             "описание сабтаск1");
     static SubTask subTask2 = new SubTask("сабтаск2",
@@ -21,14 +22,13 @@ class FileBackedTaskManagerTest {
     static Task task1 = new Task("Вызвать такси", "Вызвать грузовое такси");
     static Epic epic1 = new Epic("Очень важный эпик", "Очень важный эпик");
 
+    static final String path="C:\\temp\\tasks.csv";
+
+
     @BeforeEach
     void beforeEach() {
 
-        try {
-            taskManager = Managers.loadFromFile(File.createTempFile("tasks", "tmp"));
-        } catch (IOException e) {
-            throw new ManagerSaveException(e);
-        }
+        taskManager = Managers.getFileBackedManager(new File(path));
 
         taskManager.addTask(task1);
         taskManager.addEpic(epic1);
@@ -41,15 +41,25 @@ class FileBackedTaskManagerTest {
         subTask2.setEpicId(epic1.getId());
         taskManager.addSubTask(subTask2);
         taskManager.addSubTask(subTask2);
-    }
+
+        taskManagerFromFile = Managers.getRestoreFromFile(new File( path));
+   }
 
     @Test
     void testToString() {
-        assertEquals("1;TASK;Вызвать такси;NEW;Вызвать грузовое такси;", taskManager.toString(task1));
+        assertEquals("1;TASK;Вызвать такси;NEW;Вызвать грузовое такси;", StringWorker.toString(task1));
     }
 
     @Test
     void testFromString() {
-        assertEquals(FileBackedTaskManager.fromString("1;TASK;Вызвать такси;NEW;Вызвать грузовое такси;"), task1);
+        assertEquals(StringWorker.fromString("1;TASK;Вызвать такси;NEW;Вызвать грузовое такси;"), task1);
     }
+
+    @Test
+    void isEaqualListOfTasksWnehLoadFromFileAndSaveFromAnothermanager() {
+        assertArrayEquals(taskManager.getTasksList().toArray(),taskManagerFromFile.getTasksList().toArray());
+        assertArrayEquals(taskManager.getEpicsList().toArray(),taskManagerFromFile.getEpicsList().toArray());
+        assertArrayEquals(taskManager.getSubTasksList().toArray(),taskManagerFromFile.getSubTasksList().toArray());
+    }
+
 }

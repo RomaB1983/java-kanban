@@ -15,7 +15,11 @@ public class Managers {
         return new InMemoryHistoryManager();
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) {
-        return new FileBackedTaskManager(file.getPath());
+    public static FileBackedTaskManager getRestoreFromFile(File file) {
+        return  new FileBackedTaskManager(file.getPath(),true);
+    }
+
+    public static FileBackedTaskManager getFileBackedManager(File file) {
+        return new FileBackedTaskManager(file.getPath(),false);
     }
 }
