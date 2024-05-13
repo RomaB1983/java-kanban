@@ -190,17 +190,14 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.add(subTasks.get(id));
         return subTasks.get(id);
     }
+
     private void setStatus(Epic epic) {
         int cntNew = 0;
         int cntDone = 0;
         for (Integer subTaskId : epic.getSubTaskIds()) {
             switch (subTasks.get(subTaskId).getStatus()) {
-                case NEW:
-                    cntNew++;
-                    break;
-                case DONE:
-                    cntDone++;
-                    break;
+                case NEW -> cntNew++;
+                case DONE -> cntDone++;
             }
         }
 
