@@ -190,9 +190,7 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.add(subTasks.get(id));
         return subTasks.get(id);
     }
-
-    @Override
-    public void setStatus(Epic epic) {
+    private void setStatus(Epic epic) {
         int cntNew = 0;
         int cntDone = 0;
         for (Integer subTaskId : epic.getSubTaskIds()) {

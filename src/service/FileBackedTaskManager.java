@@ -20,7 +20,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public void loadFromFile() {
+    private void loadFromFile() {
         int taskId;
         int maxTaskId = 0;
 
@@ -96,12 +96,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    @Override
-    public void setStatus(Epic epic) {
-        super.setStatus(epic);
-        save();
-    }
-
     private void save() {
         saveListToFile(getAllTasks());
     }
@@ -133,6 +127,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             case SUBTASK -> subTasks.put(task.getId(), (SubTask) task);
         }
         return task.getId();
+
     }
 
     private List<String> getRows() {

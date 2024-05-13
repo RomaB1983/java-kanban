@@ -57,9 +57,9 @@ class FileBackedTaskManagerTest {
 
     @Test
     void isEaqualListOfTasksWnehLoadFromFileAndSaveFromAnothermanager() {
-        assertArrayEquals(taskManager.getTasksList().toArray(),taskManagerFromFile.getTasksList().toArray());
-        assertArrayEquals(taskManager.getEpicsList().toArray(),taskManagerFromFile.getEpicsList().toArray());
-        assertArrayEquals(taskManager.getSubTasksList().toArray(),taskManagerFromFile.getSubTasksList().toArray());
+        assertEquals(taskManager.getTasksList(),taskManagerFromFile.getTasksList());
+        assertEquals(taskManager.getEpicsList(),taskManagerFromFile.getEpicsList());
+        assertEquals(taskManager.getSubTasksList(),taskManagerFromFile.getSubTasksList());
     }
 
 }
