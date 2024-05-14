@@ -11,9 +11,9 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private int seqId;
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Epic> epics;
-    private final HashMap<Integer, SubTask> subTasks;
+    protected final HashMap<Integer, Task> tasks;
+    protected final HashMap<Integer, Epic> epics;
+    protected final HashMap<Integer, SubTask> subTasks;
 
     private final HistoryManager historyManager;
 
@@ -26,6 +26,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int getSeqId() {
         return ++seqId;
+    }
+
+    protected void setSeqId(int num) {
+        seqId = num;
     }
 
     @Override
@@ -187,18 +191,13 @@ public class InMemoryTaskManager implements TaskManager {
         return subTasks.get(id);
     }
 
-    @Override
-    public void setStatus(Epic epic) {
+    private void setStatus(Epic epic) {
         int cntNew = 0;
         int cntDone = 0;
         for (Integer subTaskId : epic.getSubTaskIds()) {
             switch (subTasks.get(subTaskId).getStatus()) {
-                case NEW:
-                    cntNew++;
-                    break;
-                case DONE:
-                    cntDone++;
-                    break;
+                case NEW -> cntNew++;
+                case DONE -> cntDone++;
             }
         }
 

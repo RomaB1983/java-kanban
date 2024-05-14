@@ -50,6 +50,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void isShoulbeRemoveInHistoryWhenRemoveLast() {
+
         historyManager.remove(task3.getId());
         assertEquals(task, historyManager.getHistory().get(0));
         assertEquals(task2, historyManager.getHistory().get(1));
