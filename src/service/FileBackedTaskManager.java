@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+import service.exceptions.ManagerSaveException;
 import utility.StringWorker;
 
 import java.io.*;
@@ -11,7 +12,7 @@ import java.util.List;
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final String filename;
 
-    private static final String HEADER = "id,type,name,status,description,epic";
+    private static final String HEADER = "id,type,name,status,description,epic,duration,starttime";
 
     public FileBackedTaskManager(String filename, boolean isLoadFromFile) {
         this.filename = filename;

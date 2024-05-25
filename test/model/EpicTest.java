@@ -5,13 +5,19 @@ import org.junit.jupiter.api.Test;
 import service.Managers;
 import service.interfaces.TaskManager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
-
     static TaskManager taskManager;
-    static Epic epic1 = new Epic("Очень важный эпик", "Очень важный эпик");
-    static Epic epic2 = new Epic("Переезд", "Переезд на дачу");
+    static Epic epic1 = new Epic("Очень важный эпик", "Очень важный эпик",
+            Duration.ofMinutes(30),
+            LocalDateTime.parse("2024-05-01T11:50:55"));
+    static Epic epic2 = new Epic("Переезд", "Переезд на дачу",
+            Duration.ofMinutes(30),
+            LocalDateTime.parse("2024-05-01T11:50:55"));
 
     @BeforeAll
     static void beforeAll() {

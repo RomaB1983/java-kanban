@@ -6,7 +6,11 @@ import model.Task;
 import model.TaskStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.exceptions.ManagerException;
 import service.interfaces.TaskManager;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,11 +18,23 @@ class InMemoryTaskManagerTest {
 
     static TaskManager taskManager;
     static SubTask subTask1 = new SubTask("сабтаск1",
-            "описание сабтаск1");
-    static SubTask subTask2 = new SubTask("сабтаск2",
-            "описание сабтаск2");
-    static Task task1 = new Task("Вызвать такси", "Вызвать грузовое такси");
-    static Epic epic1 = new Epic("Очень важный эпик", "Очень важный эпик");
+            "описание сабтаск1", Duration.ofMinutes(10),
+            LocalDateTime.parse("2024-05-10T11:50:55"));
+    static SubTask subTask2 = new SubTask("сабтаск2", "описание сабтаск2",
+            Duration.ofMinutes(40),
+            LocalDateTime.parse("2024-06-10T11:35:55"));
+    static SubTask subTask3 = new SubTask("сабтаск3", "описание сабтаск3",
+            Duration.ofMinutes(40),
+            LocalDateTime.parse("2024-06-10T11:35:55"));
+    static SubTask subTask4 = new SubTask("сабтаск4", "описание сабтаск4",
+            Duration.ofMinutes(40),
+            LocalDateTime.parse("2024-09-10T11:35:55"));
+    static Task task1 = new Task("Вызвать такси", "Вызвать грузовое такси",
+            Duration.ofMinutes(20),
+            LocalDateTime.parse("2024-05-02T11:50:55"));
+    static Epic epic1 = new Epic("Очень важный эпик", "Очень важный эпик",
+            Duration.ofMinutes(30),
+            LocalDateTime.parse("2024-05-01T11:50:55"));
 
     @BeforeEach
     void beforeEach() {
@@ -53,7 +69,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     void isShouldBeEqualsEpicAttrsBeforeAndAfterAddToManager() {
-        Epic epic = new Epic("name", "description");
+        Epic epic = new Epic("name", "description", Duration.ofMinutes(30),
+                LocalDateTime.parse("2024-05-01T11:50:55"));
         String epicName = epic.getName();
         String epicDesc = epic.getDescription();
         TaskStatus epicStatus = epic.getStatus();
@@ -69,7 +86,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     void isShouldBeEqualsTaskAttrsBeforeAndAfterAddToManager() {
-        Task task = new Task("name", "description");
+        Task task = new Task("name", "description", Duration.ofMinutes(30),
+                LocalDateTime.parse("2024-05-01T11:50:55"));
         String taskName = task.getName();
         String taskDesc = task.getDescription();
         TaskStatus taskStatus = task.getStatus();
@@ -85,7 +103,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     void isShouldBeEqualsSubTaskAttrsBeforeAndAfterAddToManager() {
-        SubTask subTask = new SubTask("name", "description");
+        SubTask subTask = new SubTask("name", "description", Duration.ofMinutes(30),
+                LocalDateTime.parse("2024-05-01T11:50:55"));
         String taskName = subTask.getName();
         String taskDesc = subTask.getDescription();
         Integer epicId = subTask.getEpicId();
@@ -234,5 +253,24 @@ class InMemoryTaskManagerTest {
         taskManager.getTask(task1.getId());
         assertEquals(taskManager.getHistory().size(), 1, "В истории более одной задачи");
         assertEquals(taskManager.getHistory().get(0), task1, "В истории не задача task1");
+    }
+
+    @Test
+    void isSouldbeIntersectSubTask2AndSubtask3() {
+        assertTrue(InMemoryTaskManager.isIntersect(subTask2,subTask3));
+    }
+
+    @Test
+    void isSouldNotIntersectSubTask1AndSubtask3() {
+        assertFalse(InMemoryTaskManager.isIntersect(subTask1,subTask3));
+    }
+
+    @Test
+    void isShoulbeThrowWhenAddSubtask3(){
+        assertThrows(ManagerException.class,()->taskManager.addSubTask(subTask3));
+}
+    @Test
+    void isShouldNotThrowWhenAddSubtask4(){
+        assertDoesNotThrow(()->taskManager.addSubTask(subTask4));
     }
 }
