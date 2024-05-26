@@ -41,14 +41,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getTasksList() {
         return tasks.keySet().stream()
-                .map(this::getTask)
+                .map(tasks::get)
                 .toList();
     }
 
     @Override
     public List<Epic> getEpicsList() {
         return epics.keySet().stream()
-                .map(this::getEpic)
+                .map(epics::get)
                 .toList();
 
     }
@@ -56,14 +56,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<SubTask> getSubTasksList() {
         return subTasks.keySet().stream()
-                .map(this::getSubTask)
+                .map(subTasks::get)
                 .toList();
     }
 
     @Override
     public List<SubTask> getSubTasksByEpic(Integer id) {
         return getEpic(id).getSubTaskIds().stream()
-                .map(this::getSubTask)
+                .map(subTasks::get)
                 .toList();
     }
 
@@ -201,8 +201,8 @@ public class InMemoryTaskManager implements TaskManager {
         int cntNew = 0;
         int cntDone = 0;
         long duration = 0;
-        LocalDateTime minDateTime = LocalDateTime.now();
-        LocalDateTime maxDateTime = LocalDateTime.now();
+        LocalDateTime minDateTime = LocalDateTime.MAX;
+        LocalDateTime maxDateTime = LocalDateTime.MIN;
         TaskStatus taskStatus = TaskStatus.IN_PROGRESS;
 
         for (Integer subTaskId : epic.getSubTaskIds()) {
@@ -234,9 +234,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     }
 
-    private void addToPriorityTasks(Task task) {
-        if (task.getStartTime() != null)
+    void addToPriorityTasks(Task task) {
+        if (task.getStartTime() != null) {
+            priorityTasks.remove(task);
             priorityTasks.add(task);
+        }
     }
 
     @Override
@@ -245,17 +247,18 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Set<Task> getPrioritizedTasks() {
-        return priorityTasks;
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(priorityTasks);
     }
 
-    static Boolean isIntersect(Task task1, Task task2) {
-        if (task1.getEndTime().isBefore(task2.getStartTime()) || task1 == task2) {
-            return false;
-        } else return !task1.getStartTime().isAfter(task2.getEndTime());
+    private Boolean isIntersect(Task task1, Task task2) {
+        return (task1 != task2) &&
+                (task1.getStartTime().isEqual(task2.getEndTime()) || task1.getStartTime().isBefore(task2.getEndTime())) &&
+                (task1.getEndTime().isEqual(task2.getStartTime()) || task1.getEndTime().isAfter(task2.getStartTime()));
     }
 
     private Boolean isNotIntersectedTask(Task task) {
+        if (task.getStartTime() == null || task.getEndTime() == null) return false;
         Optional<Task> optionalTask = priorityTasks.stream()
                 .filter(t -> isIntersect(t, task))
                 .findFirst();

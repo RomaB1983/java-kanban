@@ -5,7 +5,6 @@ import model.SubTask;
 import model.Task;
 
 import java.util.List;
-import java.util.Set;
 
 public interface TaskManager {
     List<Task> getTasksList();
@@ -48,5 +47,5 @@ public interface TaskManager {
 
     List<Task> getHistory();
 
-    Set<Task> getPrioritizedTasks();
+    List<Task> getPrioritizedTasks();
 }
