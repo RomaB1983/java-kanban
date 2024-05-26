@@ -14,9 +14,7 @@ class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
 
     public FileBackedTaskManagerTest() {
         super(Managers.getFileBackedManager(new File(path)));
-        taskManagerFromFile = Managers.getRestoreFromFile(new File(path));
-
-    }
+  }
 
     @Test
     void testToString() {
@@ -32,6 +30,7 @@ class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
 
     @Test
     void isEaqualListOfTasksWnehLoadFromFileAndSaveFromAnothermanager() {
+        taskManagerFromFile = Managers.getRestoreFromFile(new File(path));
         assertEquals(taskManager.getTasksList(), taskManagerFromFile.getTasksList());
         assertEquals(taskManager.getEpicsList(), taskManagerFromFile.getEpicsList());
         assertEquals(taskManager.getSubTasksList(), taskManagerFromFile.getSubTasksList());
