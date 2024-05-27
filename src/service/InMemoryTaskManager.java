@@ -70,6 +70,7 @@ public class InMemoryTaskManager implements TaskManager {
     private void historyRemove(Collection<Integer> ids) {
         ids.forEach(historyManager::remove);
     }
+
     private void prioritizedRemove(Collection<? extends Task> listTasks) {
         listTasks.forEach(priorityTasks::remove);
     }
