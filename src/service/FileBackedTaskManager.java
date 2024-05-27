@@ -123,11 +123,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private int restoreTask(Task task) {
         switch (task.getType()) {
-            case TASK -> tasks.put(task.getId(), task);
+            case TASK -> {
+                tasks.put(task.getId(), task);
+                addToPriorityTasks(task);
+            }
             case EPIC -> epics.put(task.getId(), (Epic) task);
-            case SUBTASK -> subTasks.put(task.getId(), (SubTask) task);
+            case SUBTASK -> {
+                subTasks.put(task.getId(), (SubTask) task);
+                addToPriorityTasks(task);
+            }
         }
-        addToPriorityTasks(task);
+
         return task.getId();
 
     }

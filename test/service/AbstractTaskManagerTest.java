@@ -15,12 +15,12 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-public abstract class AbstractTaskManagerTest {
-    protected TaskManager taskManager;
+public abstract class AbstractTaskManagerTest<T extends TaskManager> {
+    protected T taskManager;
 
-    public AbstractTaskManagerTest(TaskManager manager) {
+    /*public AbstractTaskManagerTest(T manager) {
         this.taskManager = manager;
-    }
+    }*/
 
     static SubTask subTask1 = new SubTask("сабтаск1",
             "описание сабтаск1", Duration.ofMinutes(10),

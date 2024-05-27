@@ -1,8 +1,12 @@
 package service;
 
-class InMemoryTaskManagerTest extends AbstractTaskManagerTest {
-    public InMemoryTaskManagerTest() {
-        super(Managers.getDefault());
-    }
+import org.junit.jupiter.api.BeforeEach;
 
+class InMemoryTaskManagerTest extends AbstractTaskManagerTest<InMemoryTaskManager> {
+    @BeforeEach
+    @Override
+    void beforeEach() {
+        taskManager = new InMemoryTaskManager();
+        super.beforeEach();
+    }
 }

@@ -62,7 +62,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<SubTask> getSubTasksByEpic(Integer id) {
-        return getEpic(id).getSubTaskIds().stream()
+        return epics.get(id).getSubTaskIds().stream()
                 .map(subTasks::get)
                 .toList();
     }
@@ -70,10 +70,14 @@ public class InMemoryTaskManager implements TaskManager {
     private void historyRemove(Collection<Integer> ids) {
         ids.forEach(historyManager::remove);
     }
+    private void prioritizedRemove(Collection<? extends Task> listTasks) {
+        listTasks.forEach(priorityTasks::remove);
+    }
 
     @Override
     public void deleteTasks() {
         historyRemove(tasks.keySet());
+        prioritizedRemove(getTasksList());
         tasks.clear();
     }
 
@@ -88,6 +92,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubTasks() {
         epics.values().forEach(e -> e.getSubTaskIds().clear());
+        prioritizedRemove(getSubTasksList());
         historyRemove(subTasks.keySet());
         subTasks.clear();
     }

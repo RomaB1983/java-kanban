@@ -1,5 +1,6 @@
 package service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utility.StringWorker;
 
@@ -7,14 +8,17 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
+class FileBackedTaskManagerTest extends AbstractTaskManagerTest<FileBackedTaskManager> {
     static FileBackedTaskManager taskManagerFromFile;
 
     static final String path = "C:\\temp\\tasks.csv";
 
-    public FileBackedTaskManagerTest() {
-        super(Managers.getFileBackedManager(new File(path)));
-  }
+    @Override
+    @BeforeEach
+    void beforeEach() {
+        taskManager =  Managers.getFileBackedManager(new File(path));
+        super.beforeEach();
+    }
 
     @Test
     void testToString() {
