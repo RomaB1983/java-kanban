@@ -4,7 +4,6 @@ import model.Epic;
 import model.SubTask;
 import model.Task;
 import model.TaskStatus;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.exceptions.ManagerException;
 import service.interfaces.TaskManager;
@@ -17,10 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public abstract class AbstractTaskManagerTest<T extends TaskManager> {
     protected T taskManager;
-
-    /*public AbstractTaskManagerTest(T manager) {
-        this.taskManager = manager;
-    }*/
 
     static SubTask subTask1 = new SubTask("сабтаск1",
             "описание сабтаск1", Duration.ofMinutes(10),
@@ -41,8 +36,8 @@ public abstract class AbstractTaskManagerTest<T extends TaskManager> {
             Duration.ofMinutes(30),
             LocalDateTime.parse("2024-05-01T11:50:55"));
 
-    @BeforeEach
-    void beforeEach() {
+
+    void initTasks() {
         taskManager.addTask(task1);
         taskManager.addEpic(epic1);
 

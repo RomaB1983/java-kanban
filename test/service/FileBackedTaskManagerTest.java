@@ -13,11 +13,10 @@ class FileBackedTaskManagerTest extends AbstractTaskManagerTest<FileBackedTaskMa
 
     static final String path = "C:\\temp\\tasks.csv";
 
-    @Override
     @BeforeEach
     void beforeEach() {
         taskManager =  Managers.getFileBackedManager(new File(path));
-        super.beforeEach();
+        initTasks();
     }
 
     @Test
