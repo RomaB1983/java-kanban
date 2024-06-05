@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+import service.exceptions.ManagerSaveException;
 import utility.StringWorker;
 
 import java.io.*;
@@ -11,7 +12,7 @@ import java.util.List;
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final String filename;
 
-    private static final String HEADER = "id,type,name,status,description,epic";
+    private static final String HEADER = "id,type,name,status,description,epic,duration,starttime";
 
     public FileBackedTaskManager(String filename, boolean isLoadFromFile) {
         this.filename = filename;
@@ -122,10 +123,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private int restoreTask(Task task) {
         switch (task.getType()) {
-            case TASK -> tasks.put(task.getId(), task);
+            case TASK -> {
+                tasks.put(task.getId(), task);
+                addToPriorityTasks(task);
+            }
             case EPIC -> epics.put(task.getId(), (Epic) task);
-            case SUBTASK -> subTasks.put(task.getId(), (SubTask) task);
+            case SUBTASK -> {
+                subTasks.put(task.getId(), (SubTask) task);
+                addToPriorityTasks(task);
+            }
         }
+
         return task.getId();
 
     }

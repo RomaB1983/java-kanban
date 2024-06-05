@@ -5,13 +5,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.interfaces.HistoryManager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
     static HistoryManager historyManager;
-    static Task task = new Task("таск ", "таск ");
-    static Task task2 = new Task("таск2 ", "таск2 ");
-    static Task task3 = new Task("таск3 ", "таск3 ");
+    static Task task = new Task("таск ", "таск ", Duration.ofMinutes(15),
+            LocalDateTime.parse("2024-05-05T11:50:55"));
+    static Task task2 = new Task("таск2 ", "таск2 ",Duration.ofMinutes(20),
+            LocalDateTime.parse("2024-05-06T11:50:55"));
+    static Task task3 = new Task("таск3 ", "таск3 ",Duration.ofMinutes(30),
+            LocalDateTime.parse("2024-05-10T11:50:55"));
 
     @BeforeEach
     void beforeEach() {
@@ -28,7 +34,8 @@ class InMemoryHistoryManagerTest {
     @Test
     void isShoulbeEqualSizeHistory10WhenGetTask10() {
         for (int i = 1; i < 11; i++) {
-            Task task = new Task("таск " + i, "таск " + i);
+            Task task = new Task("таск " + i, "таск " + i,Duration.ofMinutes(12),
+                    LocalDateTime.parse("2024-05-10T11:50:55"));
             task.setId(i);
             historyManager.add(task);
         }

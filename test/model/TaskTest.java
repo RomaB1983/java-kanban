@@ -5,12 +5,19 @@ import org.junit.jupiter.api.Test;
 import service.Managers;
 import service.interfaces.TaskManager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
     static TaskManager taskManager;
-    static Task task1 = new Task("Вызвать такси", "Вызвать грузовое такси");
-    static Task task2 = new Task("Вызвать такси2", "Вызвать грузовое такси2");
+    static Task task1 = new Task("Вызвать такси", "Вызвать грузовое такси",
+            Duration.ofMinutes(30),
+            LocalDateTime.parse("2024-09-01T11:50:55"));
+    static Task task2 = new Task("Вызвать такси2", "Вызвать грузовое такси2",
+            Duration.ofMinutes(30),
+            LocalDateTime.parse("2024-05-01T11:50:55"));
 
     @BeforeAll
     static void beforeAll() {

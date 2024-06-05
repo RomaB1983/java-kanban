@@ -5,13 +5,20 @@ import org.junit.jupiter.api.Test;
 import service.Managers;
 import service.interfaces.TaskManager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class SubTaskTest {
 
     static TaskManager taskManager;
-    static SubTask subTask1 = new SubTask("Упаковать вещи", "Упаоквать вещи в коробку и перемотать скотчем");
-    static SubTask subTask2 = new SubTask("Собрать тарелки", "Собрать тарелки в стопки");
+    static SubTask subTask1 = new SubTask("Упаковать вещи", "Упаоквать вещи в коробку и перемотать скотчем",
+            Duration.ofMinutes(30),
+            LocalDateTime.parse("2024-05-09T11:50:55"));
+    static SubTask subTask2 = new SubTask("Собрать тарелки", "Собрать тарелки в стопки",
+            Duration.ofMinutes(30),
+            LocalDateTime.parse("2024-05-01T11:50:55"));
 
     @BeforeAll
     static void beforeAll() {
