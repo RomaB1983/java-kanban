@@ -5,6 +5,7 @@ import model.SubTask;
 import model.Task;
 import model.TaskStatus;
 import service.exceptions.ManagerException;
+import service.exceptions.NotFoundException;
 import service.interfaces.HistoryManager;
 import service.interfaces.TaskManager;
 
@@ -13,13 +14,12 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
+
     private int seqId;
     protected final HashMap<Integer, Task> tasks;
     protected final HashMap<Integer, Epic> epics;
     protected final HashMap<Integer, SubTask> subTasks;
-
     protected final Set<Task> priorityTasks;
-
     private final HistoryManager historyManager;
 
     public InMemoryTaskManager() {
@@ -190,6 +190,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTask(int id) {
         historyManager.add(tasks.get(id));
+        Task task = tasks.get(id);
+        if (task == null) {
+            throw new NotFoundException("Задача по id = " + id + " не найдена");
+        }
         return tasks.get(id);
     }
 

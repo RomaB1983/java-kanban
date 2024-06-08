@@ -7,10 +7,6 @@ import java.io.File;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-/*
-* Привет! Открываю серию комментариев)
-* Не очень понял зачем делать некий абстрактный класс, чтобы избежать дублирования кода..
-* У меня вроде и так нет дублирования.. Поэтому не делал)*/
 public class Main {
 
     public static void main(String[] args) {
@@ -43,7 +39,11 @@ public class Main {
         SubTask subTask3 = new SubTask("Понять, что нужно", "Понять, как должна работать программа",Duration.ofMinutes(10), LocalDateTime.parse("2024-12-08T11:50:55"));
         subTask3.setEpicId(epic3.getId());
         taskManager.addSubTask(subTask3);
-/*
+
+        Task tas4 = new SubTask("!!!!!!!!!Понять, что нужно", "Понять, как должна работать программа",Duration.ofMinutes(10), LocalDateTime.parse("2024-12-08T11:50:55"));
+        System.out.println(tas4);
+        /*
+
         //Получение списка всех задач
         for (Task task : taskManager.getTasksList()) {
             System.out.println(task);
