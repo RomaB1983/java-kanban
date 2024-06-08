@@ -40,6 +40,7 @@ public class HttpTaskServer {
     public static void main(String[] args) {
         start();
     }
+
     public static void start() {
         try {
             httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
