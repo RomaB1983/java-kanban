@@ -34,6 +34,7 @@ public class HttpTaskServer {
         gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .registerTypeAdapter(Duration.class, new DurationAdapter())
+
                 .create();
     }
 

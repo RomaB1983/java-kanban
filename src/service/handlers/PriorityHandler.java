@@ -28,7 +28,7 @@ public class PriorityHandler extends BaseHttpHandler<Task> implements HttpHandle
     @Override
     protected Endpoint getEndpoint(String requestPath, String requestMethod) {
         String[] pathParts = requestPath.split("/");
-        if (pathParts[0].equals(firstPartOfPath)) {
+        if (pathParts[1].equals(firstPartOfPath)) {
             return Endpoint.GET_PRIORITY_LIST;
         }
         return Endpoint.UNKNOWN;

@@ -25,14 +25,14 @@ public class EpicHandler extends BaseHttpHandler<Epic> {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
-        if (endpoint == Endpoint.GET_LIST) {
-            handleGetList(exchange);
+        if (endpoint == Endpoint.GET_SUBTASKS_LIST) {
+            handleGetSubTasksList(exchange);
         } else {
             super.handle(exchange);
         }
     }
 
-    private void handleGetList(HttpExchange exchange) throws IOException {
+    private void handleGetSubTasksList(HttpExchange exchange) throws IOException {
         try {
             String response = gson.toJson(taskManager.getSubTasksByEpic(getId(exchange)));
             writeResponse(exchange, response, 200);
@@ -46,9 +46,9 @@ public class EpicHandler extends BaseHttpHandler<Epic> {
     @Override
     protected Endpoint getEndpoint(String requestPath, String requestMethod) {
         String[] pathParts = requestPath.split("/");
-        if (pathParts[0].equals(firstPartOfPath) && pathParts.length == 4 && pathParts[3].equals("subtasks")
+        if (pathParts[1].equals(firstPartOfPath) && pathParts.length == 4 && pathParts[3].equals("subtasks")
                 && requestMethod.equals("GET")) {
-            return Endpoint.GET_LIST;
+            return Endpoint.GET_SUBTASKS_LIST;
         }
         return super.getEndpoint(requestPath, requestMethod);
     }

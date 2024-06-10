@@ -63,7 +63,6 @@ public class BaseHttpHandler<T extends Task> implements HttpHandler {
     }
 
     protected void handlePostCreate(HttpExchange exchange, Consumer<T> addTask) throws IOException {
-
         try {
             T t = gson.fromJson(getStringFromBody(exchange), type);
             addTask.accept(t);
@@ -76,7 +75,9 @@ public class BaseHttpHandler<T extends Task> implements HttpHandler {
     protected void handlePostUpdate(HttpExchange exchange, Consumer<T> updateTask) throws IOException {
         try {
             getId(exchange);
-            updateTask.accept(gson.fromJson(getStringFromBody(exchange), type));
+            String body = getStringFromBody(exchange);
+            T t = gson.fromJson(body, type);
+            updateTask.accept(t);
             writeResponse(exchange, "", 201);
         } catch (ManagerException e) {
             writeResponse(exchange, e.getMessage(), 406);

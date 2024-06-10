@@ -28,7 +28,7 @@ public class HistoryHandler extends BaseHttpHandler<Task> {
     @Override
     protected Endpoint getEndpoint(String requestPath, String requestMethod) {
         String[] pathParts = requestPath.split("/");
-        if (pathParts[0].equals(firstPartOfPath)) {
+        if (pathParts[1].equals(firstPartOfPath)) {
             return Endpoint.GET_HISTORY;
         }
         return Endpoint.UNKNOWN;

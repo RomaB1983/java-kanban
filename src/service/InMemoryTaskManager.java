@@ -156,7 +156,9 @@ public class InMemoryTaskManager implements TaskManager {
             if (isNotIntersectedTask(subTask)) {
                 subTasks.put(subTask.getId(), subTask);
                 addToPriorityTasks(subTask);
-                setRequiredFields(epics.get(subTask.getEpicId()));
+                if (subTask.getEpicId() != null) {
+                    setRequiredFields(epics.get(subTask.getEpicId()));
+                }
             }
         }
     }
@@ -183,7 +185,9 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteSubTask(int id) {
         priorityTasks.remove(subTasks.get(id));
         SubTask subtask = subTasks.remove(id);
-        epics.get(subtask.getEpicId()).getSubTaskIds().remove((Integer) id);
+        if (subtask.getEpicId() != null) {
+            epics.get(subtask.getEpicId()).getSubTaskIds().remove((Integer) id);
+        }
         historyManager.remove(id);
     }
 
@@ -200,12 +204,20 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpic(int id) {
         historyManager.add(epics.get(id));
+        Epic epic = epics.get(id);
+        if (epic == null) {
+            throw new NotFoundException("Эпик по id = " + id + " не найдена");
+        }
         return epics.get(id);
     }
 
     @Override
     public SubTask getSubTask(int id) {
         historyManager.add(subTasks.get(id));
+        SubTask subTask = subTasks.get(id);
+        if (subTask == null) {
+            throw new NotFoundException("SubTask по id = " + id + " не найдена");
+        }
         return subTasks.get(id);
     }
 
@@ -264,7 +276,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private Boolean isIntersect(Task task1, Task task2) {
-        return (task1 != task2) &&
+
+        return (!task1.equals(task2)) &&
                 (task1.getStartTime().isEqual(task2.getEndTime()) || task1.getStartTime().isBefore(task2.getEndTime())) &&
                 (task1.getEndTime().isEqual(task2.getStartTime()) || task1.getEndTime().isAfter(task2.getStartTime()));
     }

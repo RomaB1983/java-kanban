@@ -3,7 +3,7 @@ package service.handlers;
 public enum Endpoint {
     GET_ALL,
     GET_BY_ID,
-    GET_LIST,
+    GET_SUBTASKS_LIST,
     GET_PRIORITY_LIST,
     POST_CREATE,
     POST_UPDATE,

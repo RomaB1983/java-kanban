@@ -11,7 +11,7 @@ public class SubTaskHandler extends BaseHttpHandler<SubTask>  {
         getById = taskManager::getSubTask;
         update = taskManager::updateSubTask;
         getList = taskManager::getSubTasksList;
-        delete = taskManager::deleteTask;
+        delete = taskManager::deleteSubTask;
         type = SubTask.class;
     }
 }

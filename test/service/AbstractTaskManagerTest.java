@@ -6,6 +6,7 @@ import model.Task;
 import model.TaskStatus;
 import org.junit.jupiter.api.Test;
 import service.exceptions.ManagerException;
+import service.exceptions.NotFoundException;
 import service.interfaces.TaskManager;
 
 import java.time.Duration;
@@ -123,7 +124,6 @@ public abstract class AbstractTaskManagerTest<T extends TaskManager> {
 
     @Test
     void isShouldBeIdIsNotNullAndExistInManagerWhenAddTask() {
-        System.out.println(task1);
         assertTrue(task1.getId() > 0, "Id должен быть >0");
         assertNotNull(taskManager.getTask(task1.getId()), "task1 не найден в taskManager");
     }
@@ -237,8 +237,8 @@ public abstract class AbstractTaskManagerTest<T extends TaskManager> {
     @Test
     void isShouldBeEpic1DelAndEpicIdInSubtasksDelWhenEpic1Delete() {
         taskManager.deleteEpic(epic1.getId());
-        assertNull(taskManager.getEpic(epic1.getId()), "epic1 не удален");
-        System.out.println(epic1.getSubTaskIds().size());
+
+        assertThrows(NotFoundException.class,()-> taskManager.getEpic(epic1.getId()));
         assertTrue(epic1.getSubTaskIds().isEmpty(), "У epic1 не удален массив subtasks");
     }
 
